@@ -1,4 +1,4 @@
-﻿##################################################################
+##################################################################
 #   InfoSec Team Automation - IOC Check-Remote - v.0.1
 #   Date: 08/06/2019
 #   Author: DOA\OTS - InfoSecTeam
@@ -37,7 +37,7 @@ else
 Foreach ($computer in $RemoteComputers){
 
 #Look for known bad file indicators on remote host
-$FileData = Invoke-Command -ComputerName $computer -ScriptBlock {Get-Childitem -Path "C:\" -Include 'id_up.exe','tiki.exe','CCleaner.exe*','wdcsam.inf.2823sf8551*' -Recurse -ErrorAction SilentlyContinue} -Credential $DomainCreds -ErrorAction SilentlyContinue
+$FileData = Invoke-Command -ComputerName $computer.name -ScriptBlock {Get-Childitem -Path "C:\" -Include 'id_up.exe','tiki.exe','CCleaner.exe*','wdcsam.inf.2823sf8551*' -Recurse -ErrorAction SilentlyContinue} -Credential $DomainCreds -ErrorAction SilentlyContinue
    if ($FileData){
    Write-Host File IoCs Found on $computer -ForegroundColor Yellow
    $FileData.FullName
@@ -48,7 +48,7 @@ Write-Host
 Write-Host
 
 #Look for known bad IP Indicators on remote host
-$IPData = Invoke-Command -ComputerName $computer -ScriptBlock {Get-NetTCPConnection -RemoteAddress '84.146.54.187','75.147.173.236','218.16.120.253','170.238.117.187','195.123.237.129','194.5.250.123','85.204.116.158','31.184.254.18','186.10.243.70' -ErrorAction SilentlyContinue} -Credential $DomainCreds -ErrorAction SilentlyContinue
+$IPData = Invoke-Command -ComputerName $computer.name -ScriptBlock {Get-NetTCPConnection -RemoteAddress '84.146.54.187','75.147.173.236','218.16.120.253','170.238.117.187','195.123.237.129','194.5.250.123','85.204.116.158','31.184.254.18','186.10.243.70' -ErrorAction SilentlyContinue} -Credential $DomainCreds -ErrorAction SilentlyContinue
    if ($IPData){
    Write-Host IP IoCs Found on $computer -ForegroundColor Yellow
    $IPData.RemoteAddress
@@ -59,7 +59,7 @@ Write-Host
 Write-Host
 
 #Look for known bad port Indicators on remote host
-$PortData = Invoke-Command -ComputerName $computer -ScriptBlock {Get-NetTCPConnection -RemotePort '445','447','449','8082','16993' -ErrorAction SilentlyContinue | Where {($_.RemoteAddress -notlike "10.*") -AND ($_.RemoteAddress -notlike "172.*") -AND ($_.RemoteAddress -notlike "192.*") }} -Credential $DomainCreds -ErrorAction SilentlyContinue
+$PortData = Invoke-Command -ComputerName $computer.name -ScriptBlock {Get-NetTCPConnection -RemotePort '445','447','449','8082','16993' -ErrorAction SilentlyContinue | Where {($_.RemoteAddress -notlike "10.*") -AND ($_.RemoteAddress -notlike "172.*") -AND ($_.RemoteAddress -notlike "192.*") }} -Credential $DomainCreds -ErrorAction SilentlyContinue
    if ($PortData){
    Write-Host Port IoCs Found on $computer -ForegroundColor Yellow
    $PortData
